@@ -244,7 +244,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 608861537}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.84, y: -1.43, z: -0.09648066}
+  m_LocalPosition: {x: 5.5, y: -1.43, z: -0.09648066}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -421,6 +421,7 @@ GameObject:
   - component: {fileID: 1781096892}
   - component: {fileID: 1781096891}
   - component: {fileID: 1781096890}
+  - component: {fileID: 1781096894}
   - component: {fileID: 1781096893}
   m_Layer: 0
   m_Name: NetworkManager
@@ -459,12 +460,12 @@ MonoBehaviour:
   runInBackground: 1
   headlessStartMode: 1
   editorAutoStart: 0
-  sendRate: 60
+  sendRate: 120
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
   offlineScene: 
   onlineScene: 
-  transport: {fileID: 1781096893}
+  transport: {fileID: 1781096894}
   networkAddress: localhost
   maxConnections: 2
   disconnectInactiveConnections: 0
@@ -489,7 +490,7 @@ MonoBehaviour:
     deliveryTimeEmaDuration: 2
   evaluationMethod: 0
   evaluationInterval: 3
-  timeInterpolationGui: 0
+  timeInterpolationGui: 1
 --- !u!4 &1781096892
 Transform:
   m_ObjectHideFlags: 0
@@ -514,21 +515,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 1781096889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Script: {fileID: 11500000, guid: bc654f29862fc2643b948f772ebb9e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
+  padding: 2
+  width: 150
+  height: 25
+--- !u!114 &1781096894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781096889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   port: 7777
+  DualMode: 1
   NoDelay: 1
-  SendTimeout: 5000
-  ReceiveTimeout: 30000
-  serverMaxMessageSize: 16384
-  serverMaxReceivesPerTick: 10000
-  serverSendQueueLimitPerConnection: 10000
-  serverReceiveQueueLimitPerConnection: 10000
-  clientMaxMessageSize: 16384
-  clientMaxReceivesPerTick: 1000
-  clientSendQueueLimit: 10000
-  clientReceiveQueueLimit: 10000
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
 --- !u!1 &1959930613
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +719,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1959930613}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.45, y: -0.0124, z: 0}
+  m_LocalPosition: {x: 9.382, y: -0.0124, z: 0}
   m_LocalScale: {x: 1, y: 10.1047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -872,7 +894,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041249544}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.44, y: -0.0124, z: 0}
+  m_LocalPosition: {x: -9.392, y: -0.0124, z: 0}
   m_LocalScale: {x: 1, y: 10.1047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

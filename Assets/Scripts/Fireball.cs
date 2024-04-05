@@ -8,7 +8,7 @@ public class Fireball : NetworkBehaviour
 
     private Rigidbody2D rb;
     private Renderer m_Renderer;
-    public bool right = false;
+    [SyncVar] public bool right = false;
     [SerializeField]
     private float moveSpeed = 0.2f;
     private Vector3 scale;
@@ -31,12 +31,13 @@ public class Fireball : NetworkBehaviour
         Vector3 movement = new Vector3(moveSpeed, 0, 0);
         transform.position = transform.position + movement;
     }
-
+    
+    [Server]
     void DestroyFireBall()
     {
         if (!m_Renderer.isVisible)
         {
-            Destroy(gameObject);
+            NetworkServer.Destroy(gameObject);
         }
     }
 

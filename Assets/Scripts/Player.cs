@@ -6,28 +6,33 @@ using Mirror;
 public class Player : NetworkBehaviour
 {
     private float moveSpeed = 70f;
-    private Rigidbody2D rb;
-    private bool isGrounded = false;
-    private Vector3 jump;
     private float jumpForce = 2.0f;
-    private Animator anim;
+    private Vector3 jump;
+    private bool facingRight;
+    private int forward = 1;
+    private int back = -1;
+    private Rigidbody2D rb;
+    private bool isGrounded = true;
+    public Animator anim;
+    private NetworkAnimator nAnim;
     [SerializeField]
     private GameObject fireballObject;
     private int fireballs;
     private Vector3 spawnPoint;
     private bool airAttack;
-    private bool facingRight;
     private Rigidbody2D otherPlayer;
-    private int forward = 1;
-    private int back = -1;
     private GameObject[] players;
     private GameObject halfway;
     private Vector3 scale;
+    [SyncVar] public int health = 100;
+    [SerializeField]
+    private GameObject pushBox;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        nAnim = GetComponent<NetworkAnimator>();
         players = GameObject.FindGameObjectsWithTag("Player");
         halfway = GameObject.Find("Halfway");
         scale = transform.localScale;
@@ -47,8 +52,6 @@ public class Player : NetworkBehaviour
     void Movement()
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
-
-        Debug.Log(moveHorizontal);
 
         if (isGrounded && !anim.GetBool("isCrouching") && anim.GetBool("canAct"))
         {
@@ -96,15 +99,63 @@ public class Player : NetworkBehaviour
         }
     }
 
-    [Command]
-    void ShootFireball()
+    public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
-        if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == 0 && anim.GetBool("canAct") && isGrounded && isLocalPlayer)
+        Vector3 pushbackForce = new Vector3(pushback * back, 0, 0);
+
+        Debug.Log(hitStun);
+
+        if (attackHeight == 0)
+        {
+            if (isCrouching && isBlocking)
+            {
+                StartCoroutine(Inactionable(blockStun));
+                if (isSpecial)
+                {
+                    health -= (int)Mathf.Round(damage / 10);
+                }
+                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                nAnim.SetTrigger("Low Block");
+            }
+            else
+            {
+                StartCoroutine(Inactionable(hitStun));   
+                health -= damage;
+                if (isKnockdown)
+                {
+                    nAnim.SetTrigger("Knockdown");
+                }
+                else
+                {
+                    rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                    if(!isCrouching){
+                        nAnim.SetTrigger("Stand Hit");
+                    }
+                    else{
+                        nAnim.SetTrigger("Low Hit");
+                    }
+                }
+            }
+
+        }
+    }
+
+    IEnumerator Inactionable(float stun){
+        Debug.Log("inactionable");
+        anim.SetBool("canAct", false);
+        yield return new WaitForSeconds(stun);
+        anim.SetBool("canAct", true);
+    }
+
+    [Command]
+    void FireballCmd()
+    {
+        if (anim.GetBool("canAct") && isGrounded && !anim.GetBool("isCrouching"))
         {
             fireballs = GameObject.FindGameObjectsWithTag("Projectile").Length;
             if (fireballs == 0)
             {
-                anim.SetTrigger("Fireball");
+                FireballRpc();
                 StartCoroutine(Delay(0.15f));
                 float xDisplacement;
                 if (facingRight)
@@ -117,6 +168,7 @@ public class Player : NetworkBehaviour
                 }
                 spawnPoint = new Vector3(transform.position.x + xDisplacement, transform.position.y + 0.35f, transform.position.z);
                 GameObject fireball = Instantiate(NetworkManager.singleton.spawnPrefabs[0], spawnPoint, Quaternion.identity);
+                NetworkServer.Spawn(fireball);
                 if (facingRight)
                 {
                     fireball.GetComponent<Fireball>().right = false;
@@ -125,9 +177,14 @@ public class Player : NetworkBehaviour
                 {
                     fireball.GetComponent<Fireball>().right = true;
                 }
-                NetworkServer.Spawn(fireball);
             }
         }
+    }
+
+    [ClientRpc]
+    void FireballRpc()
+    {
+        nAnim.SetTrigger("Fireball");
     }
 
     IEnumerator Delay(float delay)
@@ -144,28 +201,25 @@ public class Player : NetworkBehaviour
 
         if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == forward && anim.GetBool("canAct") && isGrounded)
         {
-            anim.SetTrigger("Uppercut");
+            nAnim.SetTrigger("Uppercut");
             rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
         }
     }
 
     void Jump()
     {
-        if (isLocalPlayer)
+        float horizontalSpeed = 25.0f;
+        float jumpHeight = 65.0f;
+        float jumpHorizontal = Input.GetAxisRaw("Horizontal");
+
+        jump = new Vector3(jumpHorizontal * horizontalSpeed, jumpHeight, 0.0f);
+
+        if (Input.GetButtonDown("Jump") && isGrounded && anim.GetBool("canAct"))
         {
-            float horizontalSpeed = 25.0f;
-            float jumpHeight = 65.0f;
-            float jumpHorizontal = Input.GetAxisRaw("Horizontal");
-
-            jump = new Vector3(jumpHorizontal * horizontalSpeed, jumpHeight, 0.0f);
-
-            if (Input.GetButtonDown("Jump") && isGrounded && anim.GetBool("canAct"))
-            {
-                anim.SetBool("isJumping", true);
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = 0.0f;
-                rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
-            }
+            anim.SetBool("isJumping", true);
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = 0.0f;
+            rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
         }
     }
 
@@ -173,7 +227,7 @@ public class Player : NetworkBehaviour
     {
         if (anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
         {
-            anim.SetTrigger("Crouch Attack");
+            nAnim.SetTrigger("Crouch Attack");
         }
     }
 
@@ -181,7 +235,7 @@ public class Player : NetworkBehaviour
     {
         if (!anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
         {
-            anim.SetTrigger("Stand Attack");
+            nAnim.SetTrigger("Stand Attack");
         }
     }
 
@@ -190,7 +244,15 @@ public class Player : NetworkBehaviour
         if (Input.GetButtonDown("Attack") && !isGrounded && !airAttack)
         {
             airAttack = true;
-            anim.SetTrigger("Jump Attack");
+            nAnim.SetTrigger("Jump Attack");
+        }
+    }
+
+    void AirKicks()
+    {
+        if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == back && isGrounded && !anim.GetBool("isCrouching"))
+        {
+            nAnim.SetTrigger("Air Kicks");
         }
     }
 
@@ -227,6 +289,8 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
+        FacingDirection();
+        if (!Application.isFocused) return;
         if (isLocalPlayer)
         {
             Movement();
@@ -234,9 +298,20 @@ public class Player : NetworkBehaviour
             CrouchAttack();
             StandAttack();
             JumpAttack();
-            ShootFireball();
+            AirKicks();
+            if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == 0)
+            {
+                FireballCmd();
+            }
             Uppercut();
-            FacingDirection();
+
+            pushBox.SetActive(isGrounded);
+
+            if (anim.GetBool("isAirKicking"))
+            {
+                Vector3 movement = new Vector3(forward * moveSpeed * 0.00015f, 0, 0);
+                transform.position = transform.position + movement;
+            }
 
             if (rb.velocity.y < 0 && !isGrounded)
             {
@@ -247,10 +322,6 @@ public class Player : NetworkBehaviour
             if (players.Length < 2)
             {
                 players = GameObject.FindGameObjectsWithTag("Player");
-                foreach (var x in players)
-                {
-                    Debug.Log(x.ToString());
-                }
             }
             else if (otherPlayer == null)
             {
@@ -259,16 +330,14 @@ public class Player : NetworkBehaviour
                     if (player != gameObject)
                     {
                         otherPlayer = player.GetComponent<Rigidbody2D>();
-                        Debug.Log(otherPlayer);
                     }
                 }
             }
         }
-
     }
 
     void FixedUpdate()
     {
-        // Debug.Log(anim.GetBool("isFalling"));
+        Debug.Log(anim.GetBool("canAct"));
     }
 }

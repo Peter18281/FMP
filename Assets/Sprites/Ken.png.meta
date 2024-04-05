@@ -605,7 +605,7 @@ TextureImporter:
         width: 36
         height: 53
       alignment: 9
-      pivot: {x: 0.5195965, y: 0.76040244}
+      pivot: {x: 0.51959485, y: 0.760399}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -709,8 +709,8 @@ TextureImporter:
         y: 106
         width: 41
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49484178, y: 0.6504879}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -920,7 +920,7 @@ TextureImporter:
         width: 35
         height: 60
       alignment: 9
-      pivot: {x: 0.4999965, y: 0.75887}
+      pivot: {x: 0.52016604, y: 0.6765022}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1310,6 +1310,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Air Kicks 1
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 499
+        width: 59
+        height: 87
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3634026}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2655bd9a0e18fc04e9bfb1800b5ea6d9
+      internalID: -44175380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Kicks 2
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 501
+        width: 33
+        height: 84
+      alignment: 9
+      pivot: {x: 0.49999976, y: 0.38928005}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8daa98fe1f9f04f40b87b346e4515733
+      internalID: -388200369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Kicks 3
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 505
+        width: 55
+        height: 79
+      alignment: 9
+      pivot: {x: 0.4812109, y: 0.33648914}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3952b9ca4c3c3e74bb7d94fd0d881c51
+      internalID: -1471845524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Kicks 4
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 504
+        width: 33
+        height: 79
+      alignment: 9
+      pivot: {x: 0.53131425, y: 0.37573165}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a36362eed91997459289fe657a18df5
+      internalID: 2090502063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -1321,6 +1405,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Air Kicks 1: -44175380
+      Air Kicks 2: -388200369
+      Air Kicks 3: -1471845524
+      Air Kicks 4: 2090502063
       Crouch: 906436144
       Crouch Attack 1: 117701931
       Crouch Attack 2: 664605803
