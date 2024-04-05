@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour
     private int forward = 1;
     private int back = -1;
     private Rigidbody2D rb;
-    private bool isGrounded = true;
+    public bool isGrounded = true;
     public Animator anim;
     private NetworkAnimator nAnim;
     [SerializeField]
@@ -20,7 +20,8 @@ public class Player : NetworkBehaviour
     private int fireballs;
     private Vector3 spawnPoint;
     private bool airAttack;
-    private Rigidbody2D otherPlayer;
+    private Player otherPlayer;
+    private Rigidbody2D otherPlayerRB;
     private GameObject[] players;
     private GameObject halfway;
     private Vector3 scale;
@@ -260,9 +261,9 @@ public class Player : NetworkBehaviour
     {
         scale = transform.localScale;
 
-        if (otherPlayer != null)
+        if (otherPlayerRB != null && isGrounded)
         {
-            if (otherPlayer.transform.position.x > transform.position.x && !facingRight)
+            if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && otherPlayer.isGrounded)
             {
                 facingRight = true;
                 forward = 1;
@@ -273,7 +274,7 @@ public class Player : NetworkBehaviour
                     transform.localScale = scale;
                 }
             }
-            else if (otherPlayer.transform.position.x < transform.position.x && facingRight)
+            else if (otherPlayerRB.transform.position.x < transform.position.x && facingRight && otherPlayer.isGrounded)
             {
                 facingRight = false;
                 forward = -1;
@@ -329,7 +330,8 @@ public class Player : NetworkBehaviour
                 {
                     if (player != gameObject)
                     {
-                        otherPlayer = player.GetComponent<Rigidbody2D>();
+                        otherPlayer = player.GetComponent<Player>();
+                        otherPlayerRB = player.GetComponent<Rigidbody2D>();
                     }
                 }
             }
