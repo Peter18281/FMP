@@ -478,8 +478,8 @@ TextureImporter:
         y: 724
         width: 62
         height: 82
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.26986793, y: 0.50609905}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -772,8 +772,8 @@ TextureImporter:
         y: 108
         width: 73
         height: 40
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49776596, y: 0.9934982}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -789,12 +789,12 @@ TextureImporter:
       name: Knockdown 4
       rect:
         serializedVersion: 2
-        x: 1152
+        x: 1153
         y: 110
         width: 75
         height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.47899577, y: 1.5184315}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1275,7 +1275,7 @@ TextureImporter:
         x: 244
         y: 433
         width: 30
-        height: 22
+        height: 23
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1296,7 +1296,7 @@ TextureImporter:
         x: 361
         y: 427
         width: 28
-        height: 28
+        height: 27
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1394,6 +1394,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Fireball Hit 1
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 377
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b29b923c3785a446a384c7fb0b2ffd5
+      internalID: -723744071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fireball Hit 2
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 374
+        width: 12
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbd26949d7cfc9d4c9203d273f53f20f
+      internalID: -1636533282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fireball Hit 3
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 372
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab4da6c926b026c4a8fd35c35b9a3ae0
+      internalID: 618411559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fireball Hit 4
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 371
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff44e42bddf5c464b8cd300882324fe9
+      internalID: 2109763089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -1418,6 +1502,10 @@ TextureImporter:
       Fireball 1: 67576243
       Fireball 2: -1715945358
       Fireball 3: -1002939037
+      Fireball Hit 1: -723744071
+      Fireball Hit 2: -1636533282
+      Fireball Hit 3: 618411559
+      Fireball Hit 4: 2109763089
       Getup 1: -74311848
       Getup 2: 1714286451
       Getup 3: -1450677249

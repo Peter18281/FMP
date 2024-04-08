@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour
     private NetworkAnimator nAnim;
     [SerializeField]
     private GameObject fireballObject;
-    private int fireballs;
+    private GameObject[] fireballs;
     private Vector3 spawnPoint;
     private bool airAttack;
     private Player otherPlayer;
@@ -28,6 +28,11 @@ public class Player : NetworkBehaviour
     [SyncVar] public int health = 100;
     [SerializeField]
     private GameObject pushBox;
+    public int id;
+    private bool fireballUsed = false;
+    public bool invincible = false;
+    [SerializeField]
+    public List<GameObject> myHurtboxes;
 
     void Start()
     {
@@ -35,6 +40,14 @@ public class Player : NetworkBehaviour
         anim = GetComponent<Animator>();
         nAnim = GetComponent<NetworkAnimator>();
         players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length == 1)
+        {
+            id = 1;
+        }
+        else
+        {
+            id = 2;
+        }
         halfway = GameObject.Find("Halfway");
         scale = transform.localScale;
         if (halfway.transform.position.x < transform.position.x)
@@ -103,9 +116,7 @@ public class Player : NetworkBehaviour
     public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
         Vector3 pushbackForce = new Vector3(pushback * back, 0, 0);
-
-        Debug.Log(hitStun);
-
+        if(invincible) return;
         if (attackHeight == 0)
         {
             if (isCrouching && isBlocking)
@@ -120,7 +131,6 @@ public class Player : NetworkBehaviour
             }
             else
             {
-                StartCoroutine(Inactionable(hitStun));   
                 health -= damage;
                 if (isKnockdown)
                 {
@@ -128,21 +138,116 @@ public class Player : NetworkBehaviour
                 }
                 else
                 {
+                    StartCoroutine(Inactionable(hitStun));
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                    if(!isCrouching){
+                    if (!isCrouching)
+                    {
                         nAnim.SetTrigger("Stand Hit");
                     }
-                    else{
+                    else
+                    {
                         nAnim.SetTrigger("Low Hit");
                     }
                 }
             }
+        }
 
+        if (attackHeight == 1)
+        {
+            if (isBlocking)
+            {
+                StartCoroutine(Inactionable(blockStun));
+                if (isSpecial)
+                {
+                    health -= (int)Mathf.Round(damage / 10);
+                }
+                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                if (!isCrouching)
+                {
+                    nAnim.SetTrigger("Stand Block");
+                }
+                else
+                {
+                    nAnim.SetTrigger("Low Block");
+                }
+
+            }
+            else
+            {
+                health -= damage;
+                if (isKnockdown)
+                {
+                    isGrounded = false;
+                    Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
+                    rb.AddForce(knockdownForce, ForceMode2D.Impulse);
+                    nAnim.SetTrigger("Knockdown");
+                }
+                else
+                {
+                    StartCoroutine(Inactionable(hitStun));
+                    rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                    if (!isBlocking && !isCrouching)
+                    {
+                        nAnim.SetTrigger("Stand Hit");
+                    }
+                    else
+                    {
+                        nAnim.SetTrigger("Low Hit");
+                    }
+                }
+            }
+        }
+
+        if (attackHeight == 2)
+        {
+            if (isBlocking && !isCrouching)
+            {
+                StartCoroutine(Inactionable(blockStun));
+                if (isSpecial)
+                {
+                    health -= (int)Mathf.Round(damage / 10);
+                }
+                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                    nAnim.SetTrigger("Stand Block");
+
+            }
+            else
+            {
+                health -= damage;
+                if (isKnockdown)
+                {
+                    isGrounded = false;
+                    Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
+                    rb.AddForce(knockdownForce, ForceMode2D.Impulse);
+                    nAnim.SetTrigger("Knockdown");
+                }
+                else
+                {
+                    StartCoroutine(Inactionable(hitStun));
+                    rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                    if (!isBlocking && !isCrouching)
+                    {
+                        nAnim.SetTrigger("Stand Hit");
+                    }
+                    else
+                    {
+                        nAnim.SetTrigger("Low Hit");
+                    }
+                }
+            }
         }
     }
 
-    IEnumerator Inactionable(float stun){
-        Debug.Log("inactionable");
+    void OpenCancellable(){
+        anim.SetBool("canCancel", true);
+    }
+
+    void CloseCancellable(){
+        anim.SetBool("canCancel", false);
+    }
+
+    IEnumerator Inactionable(float stun)
+    {
         anim.SetBool("canAct", false);
         yield return new WaitForSeconds(stun);
         anim.SetBool("canAct", true);
@@ -151,10 +256,19 @@ public class Player : NetworkBehaviour
     [Command]
     void FireballCmd()
     {
-        if (anim.GetBool("canAct") && isGrounded && !anim.GetBool("isCrouching"))
+        if ((anim.GetBool("canAct") || anim.GetBool("canCancel")) && isGrounded && !anim.GetBool("isCrouching"))
         {
-            fireballs = GameObject.FindGameObjectsWithTag("Projectile").Length;
-            if (fireballs == 0)
+            fireballs = GameObject.FindGameObjectsWithTag("Projectile");
+            fireballUsed = false;
+            foreach (var fb in fireballs)
+            {
+                var script = fb.GetComponent<Fireball>();
+                if (script.player.id == id)
+                {
+                    fireballUsed = true;
+                }
+            }
+            if (!fireballUsed)
             {
                 FireballRpc();
                 StartCoroutine(Delay(0.15f));
@@ -170,6 +284,7 @@ public class Player : NetworkBehaviour
                 spawnPoint = new Vector3(transform.position.x + xDisplacement, transform.position.y + 0.35f, transform.position.z);
                 GameObject fireball = Instantiate(NetworkManager.singleton.spawnPrefabs[0], spawnPoint, Quaternion.identity);
                 NetworkServer.Spawn(fireball);
+                fireball.GetComponent<Fireball>().player = GetComponent<Player>();
                 if (facingRight)
                 {
                     fireball.GetComponent<Fireball>().right = false;
@@ -291,6 +406,7 @@ public class Player : NetworkBehaviour
     void Update()
     {
         FacingDirection();
+        
         if (!Application.isFocused) return;
         if (isLocalPlayer)
         {
@@ -307,6 +423,18 @@ public class Player : NetworkBehaviour
             Uppercut();
 
             pushBox.SetActive(isGrounded);
+
+            if(anim.GetBool("isInvincible")){
+                invincible = true;
+            }
+            else{
+                invincible = false;
+            }
+
+            if (anim.GetBool("isKnockedDown") && isGrounded)
+            {
+                nAnim.SetTrigger("Get Up");
+            }
 
             if (anim.GetBool("isAirKicking"))
             {
@@ -340,6 +468,6 @@ public class Player : NetworkBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(anim.GetBool("canAct"));
+        // Debug.Log(invincible);
     }
 }

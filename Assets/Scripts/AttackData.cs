@@ -11,4 +11,6 @@ public class AttackData : MonoBehaviour
     public int attackHeight;
     public float hitStun;
     public float blockStun;
+    public bool isFireball;
+    public Fireball fireball;
 }

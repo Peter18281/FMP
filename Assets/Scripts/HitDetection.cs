@@ -9,15 +9,34 @@ public class HitDetection : MonoBehaviour
     [SerializeField]
     private List<GameObject> myHitboxes;
     private AttackData attackData;
+    private Fireball fireball;
     private bool isColliding;
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag("HitBox") && !myHitboxes.Contains(col.gameObject))
+        if (col.CompareTag("HitBox") && !myHitboxes.Contains(col.gameObject) && !player.invincible)
         {
-            if(isColliding) return;
+            if (isColliding) return;
             isColliding = true;
             attackData = col.gameObject.GetComponent<AttackData>();
+            if (attackData.isFireball)
+            {
+                fireball = attackData.fireball;
+                if (fireball.player.id != player.id)
+                {
+                    player.GetHit(
+                                    attackData.damage,
+                                    attackData.pushback,
+                                    attackData.isKnockdown,
+                                    player.anim.GetBool("isBlocking"),
+                                    attackData.isSpecial,
+                                    player.anim.GetBool("isCrouching"),
+                                    attackData.attackHeight,
+                                    attackData.hitStun,
+                                    attackData.blockStun
+                                     );
+                }
+            }
             player.GetHit(
                 attackData.damage,
                 attackData.pushback,
