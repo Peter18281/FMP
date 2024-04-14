@@ -112,137 +112,143 @@ public class Player : NetworkBehaviour
             isGrounded = false;
         }
     }
-
+    
+    [ClientRpc]
     public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
         Vector3 pushbackForce = new Vector3(pushback * back, 0, 0);
-        if(invincible) return;
-        if (attackHeight == 0)
+        Debug.Log(health);
+        if (!invincible)
         {
-            if (isCrouching && isBlocking)
+            if (attackHeight == 0)
             {
-                StartCoroutine(Inactionable(blockStun));
-                if (isSpecial)
+                if (isCrouching && isBlocking)
                 {
-                    health -= (int)Mathf.Round(damage / 10);
-                }
-                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                nAnim.SetTrigger("Low Block");
-            }
-            else
-            {
-                health -= damage;
-                if (isKnockdown)
-                {
-                    nAnim.SetTrigger("Knockdown");
+                    StartCoroutine(Inactionable(blockStun));
+                    if (isSpecial)
+                    {
+                        health -= (int)Mathf.Round(damage / 10);
+                    }
+                    rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                    nAnim.SetTrigger("Low Block");
                 }
                 else
                 {
-                    StartCoroutine(Inactionable(hitStun));
+                    health -= damage;
+                    if (isKnockdown)
+                    {
+                        nAnim.SetTrigger("Knockdown");
+                    }
+                    else
+                    {
+                        StartCoroutine(Inactionable(hitStun));
+                        rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                        if (!isCrouching)
+                        {
+                            nAnim.SetTrigger("Stand Hit");
+                        }
+                        else
+                        {
+                            nAnim.SetTrigger("Low Hit");
+                        }
+                    }
+                }
+            }
+
+            if (attackHeight == 1)
+            {
+                if (isBlocking)
+                {
+                    StartCoroutine(Inactionable(blockStun));
+                    if (isSpecial)
+                    {
+                        health -= (int)Mathf.Round(damage / 10);
+                    }
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                     if (!isCrouching)
                     {
-                        nAnim.SetTrigger("Stand Hit");
+                        nAnim.SetTrigger("Stand Block");
                     }
                     else
                     {
-                        nAnim.SetTrigger("Low Hit");
+                        nAnim.SetTrigger("Low Block");
+                    }
+
+                }
+                else
+                {
+                    health -= damage;
+                    if (isKnockdown)
+                    {
+                        isGrounded = false;
+                        Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
+                        rb.AddForce(knockdownForce, ForceMode2D.Impulse);
+                        nAnim.SetTrigger("Knockdown");
+                    }
+                    else
+                    {
+                        StartCoroutine(Inactionable(hitStun));
+                        rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                        if (!isBlocking && !isCrouching)
+                        {
+                            nAnim.SetTrigger("Stand Hit");
+                        }
+                        else
+                        {
+                            nAnim.SetTrigger("Low Hit");
+                        }
                     }
                 }
             }
-        }
 
-        if (attackHeight == 1)
-        {
-            if (isBlocking)
+            if (attackHeight == 2)
             {
-                StartCoroutine(Inactionable(blockStun));
-                if (isSpecial)
+                if (isBlocking && !isCrouching)
                 {
-                    health -= (int)Mathf.Round(damage / 10);
-                }
-                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                if (!isCrouching)
-                {
-                    nAnim.SetTrigger("Stand Block");
-                }
-                else
-                {
-                    nAnim.SetTrigger("Low Block");
-                }
-
-            }
-            else
-            {
-                health -= damage;
-                if (isKnockdown)
-                {
-                    isGrounded = false;
-                    Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
-                    rb.AddForce(knockdownForce, ForceMode2D.Impulse);
-                    nAnim.SetTrigger("Knockdown");
-                }
-                else
-                {
-                    StartCoroutine(Inactionable(hitStun));
+                    StartCoroutine(Inactionable(blockStun));
+                    if (isSpecial)
+                    {
+                        health -= (int)Mathf.Round(damage / 10);
+                    }
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                    if (!isBlocking && !isCrouching)
-                    {
-                        nAnim.SetTrigger("Stand Hit");
-                    }
-                    else
-                    {
-                        nAnim.SetTrigger("Low Hit");
-                    }
-                }
-            }
-        }
-
-        if (attackHeight == 2)
-        {
-            if (isBlocking && !isCrouching)
-            {
-                StartCoroutine(Inactionable(blockStun));
-                if (isSpecial)
-                {
-                    health -= (int)Mathf.Round(damage / 10);
-                }
-                rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                     nAnim.SetTrigger("Stand Block");
 
-            }
-            else
-            {
-                health -= damage;
-                if (isKnockdown)
-                {
-                    isGrounded = false;
-                    Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
-                    rb.AddForce(knockdownForce, ForceMode2D.Impulse);
-                    nAnim.SetTrigger("Knockdown");
                 }
                 else
                 {
-                    StartCoroutine(Inactionable(hitStun));
-                    rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                    if (!isBlocking && !isCrouching)
+                    health -= damage;
+                    if (isKnockdown)
                     {
-                        nAnim.SetTrigger("Stand Hit");
+                        isGrounded = false;
+                        Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
+                        rb.AddForce(knockdownForce, ForceMode2D.Impulse);
+                        nAnim.SetTrigger("Knockdown");
                     }
                     else
                     {
-                        nAnim.SetTrigger("Low Hit");
+                        StartCoroutine(Inactionable(hitStun));
+                        rb.AddForce(pushbackForce, ForceMode2D.Impulse);
+                        if (!isBlocking && !isCrouching)
+                        {
+                            nAnim.SetTrigger("Stand Hit");
+                        }
+                        else
+                        {
+                            nAnim.SetTrigger("Low Hit");
+                        }
                     }
                 }
             }
         }
     }
 
-    void OpenCancellable(){
+    void OpenCancellable()
+    {
         anim.SetBool("canCancel", true);
     }
 
-    void CloseCancellable(){
+    void CloseCancellable()
+    {
         anim.SetBool("canCancel", false);
     }
 
@@ -406,7 +412,16 @@ public class Player : NetworkBehaviour
     void Update()
     {
         FacingDirection();
-        
+
+        if (anim.GetBool("isInvincible"))
+        {
+            invincible = true;
+        }
+        else
+        {
+            invincible = false;
+        }
+
         if (!Application.isFocused) return;
         if (isLocalPlayer)
         {
@@ -424,12 +439,7 @@ public class Player : NetworkBehaviour
 
             pushBox.SetActive(isGrounded);
 
-            if(anim.GetBool("isInvincible")){
-                invincible = true;
-            }
-            else{
-                invincible = false;
-            }
+
 
             if (anim.GetBool("isKnockedDown") && isGrounded)
             {

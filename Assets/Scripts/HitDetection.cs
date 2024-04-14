@@ -37,17 +37,21 @@ public class HitDetection : MonoBehaviour
                                      );
                 }
             }
-            player.GetHit(
-                attackData.damage,
-                attackData.pushback,
-                attackData.isKnockdown,
-                player.anim.GetBool("isBlocking"),
-                attackData.isSpecial,
-                player.anim.GetBool("isCrouching"),
-                attackData.attackHeight,
-                attackData.hitStun,
-                attackData.blockStun
-                 );
+            else
+            {
+                player.GetHit(
+                                attackData.damage,
+                                attackData.pushback,
+                                attackData.isKnockdown,
+                                player.anim.GetBool("isBlocking"),
+                                attackData.isSpecial,
+                                player.anim.GetBool("isCrouching"),
+                                attackData.attackHeight,
+                                attackData.hitStun,
+                                attackData.blockStun
+                                 );
+            }
+            col.GetComponent<GameObject>().SetActive(false);
         }
     }
 

@@ -156,8 +156,7 @@ MonoBehaviour:
   syncInterval: 0
   right: 0
   moveSpeed: 0.2
-  playerId: 0
-  myHurtboxes: []
+  player: {fileID: 0}
 --- !u!114 &8453787226959778113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   clientAuthority: 0
