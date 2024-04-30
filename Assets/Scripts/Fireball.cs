@@ -17,6 +17,7 @@ public class Fireball : NetworkBehaviour
     private bool _collided = false;
     public Player player;
     private bool collided;
+    public HUDManager hudManager;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,7 @@ public class Fireball : NetworkBehaviour
     void DestroyFireBall()
     {
         NetworkServer.Destroy(gameObject);
+        hudManager.FireballGray(player.id, false);
     }
 
     void OnTriggerEnter2D(Collider2D col)

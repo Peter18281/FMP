@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour
     private NetworkAnimator nAnim;
     [SerializeField]
     private GameObject fireballObject;
-    private GameObject[] fireballs;
+    public GameObject[] fireballs;
     private Vector3 spawnPoint;
     private bool airAttack;
     private Player otherPlayer;
@@ -33,7 +33,9 @@ public class Player : NetworkBehaviour
     public bool invincible = false;
     [SerializeField]
     public List<GameObject> myHurtboxes;
-
+    [SerializeField]
+    private HUDManager hudManager;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -291,6 +293,8 @@ public class Player : NetworkBehaviour
                 GameObject fireball = Instantiate(NetworkManager.singleton.spawnPrefabs[0], spawnPoint, Quaternion.identity);
                 NetworkServer.Spawn(fireball);
                 fireball.GetComponent<Fireball>().player = GetComponent<Player>();
+                fireball.GetComponent<Fireball>().hudManager = hudManager;
+                hudManager.FireballGray(id, true);
                 if (facingRight)
                 {
                     fireball.GetComponent<Fireball>().right = false;
