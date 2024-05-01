@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
@@ -35,12 +36,19 @@ public class Player : NetworkBehaviour
     public List<GameObject> myHurtboxes;
     [SerializeField]
     private HUDManager hudManager;
-    
+    [SyncVar] public bool player1 = false;
+    private RoundManager roundManager;
+    public Image round1;
+    public Image round2;
+    public bool lost;
+    private SpriteRenderer spriteRenderer;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         nAnim = GetComponent<NetworkAnimator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         players = GameObject.FindGameObjectsWithTag("Player");
         if (players.Length == 1)
         {
@@ -51,6 +59,7 @@ public class Player : NetworkBehaviour
             id = 2;
         }
         halfway = GameObject.Find("Halfway");
+        roundManager = GameObject.Find("GameManager").GetComponent<RoundManager>();
         scale = transform.localScale;
         if (halfway.transform.position.x < transform.position.x)
         {
@@ -114,7 +123,7 @@ public class Player : NetworkBehaviour
             isGrounded = false;
         }
     }
-    
+
     [ClientRpc]
     public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
@@ -426,7 +435,39 @@ public class Player : NetworkBehaviour
             invincible = false;
         }
 
-        if (!Application.isFocused) return;
+        if (health <= 0)
+        {
+            if (lost) return;
+            roundManager.AwardWin(!player1);
+            lost = true;
+            roundManager.Reset();
+        }
+
+        if (player1)
+        {
+            spriteRenderer.color = new Color(110f / 255f, 132f / 255f, 255f / 255f);
+            if (roundManager.player1Rounds == 1)
+            {
+                round1.gameObject.SetActive(true);
+            }
+            else if (roundManager.player1Rounds == 2)
+            {
+                round2.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            if (roundManager.player2Rounds == 1)
+            {
+                round1.gameObject.SetActive(true);
+            }
+            else if (roundManager.player2Rounds == 2)
+            {
+                round2.gameObject.SetActive(true);
+            }
+        }
+
+        // if (!Application.isFocused) return;
         if (isLocalPlayer)
         {
             Movement();
@@ -442,8 +483,6 @@ public class Player : NetworkBehaviour
             Uppercut();
 
             pushBox.SetActive(isGrounded);
-
-
 
             if (anim.GetBool("isKnockedDown") && isGrounded)
             {
@@ -464,6 +503,7 @@ public class Player : NetworkBehaviour
 
             if (players.Length < 2)
             {
+                player1 = true;
                 players = GameObject.FindGameObjectsWithTag("Player");
             }
             else if (otherPlayer == null)
