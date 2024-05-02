@@ -13,9 +13,9 @@ public class Player : NetworkBehaviour
     private int forward = 1;
     private int back = -1;
     private Rigidbody2D rb;
-    public bool isGrounded = true;
+    [SyncVar] public bool isGrounded = true;
     public Animator anim;
-    private NetworkAnimator nAnim;
+    public NetworkAnimator nAnim;
     [SerializeField]
     private GameObject fireballObject;
     public GameObject[] fireballs;
@@ -106,6 +106,11 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void WinPose()
+    {
+        nAnim.SetTrigger("Won");
+    }
+
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Floor"))
@@ -128,7 +133,6 @@ public class Player : NetworkBehaviour
     public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
         Vector3 pushbackForce = new Vector3(pushback * back, 0, 0);
-        Debug.Log(health);
         if (!invincible)
         {
             if (attackHeight == 0)
@@ -397,7 +401,7 @@ public class Player : NetworkBehaviour
 
         if (otherPlayerRB != null && isGrounded)
         {
-            if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && otherPlayer.isGrounded)
+            if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && players[1].GetComponent<Player>().isGrounded)
             {
                 facingRight = true;
                 forward = 1;
@@ -408,7 +412,7 @@ public class Player : NetworkBehaviour
                     transform.localScale = scale;
                 }
             }
-            else if (otherPlayerRB.transform.position.x < transform.position.x && facingRight && otherPlayer.isGrounded)
+            else if (otherPlayerRB.transform.position.x < transform.position.x && facingRight && players[1].GetComponent<Player>().isGrounded)
             {
                 facingRight = false;
                 forward = -1;
@@ -435,12 +439,15 @@ public class Player : NetworkBehaviour
             invincible = false;
         }
 
-        if (health <= 0)
+        if (players.Length < 2)
         {
-            if (lost) return;
-            roundManager.AwardWin(!player1);
-            lost = true;
-            roundManager.Reset();
+            player1 = true;
+            players = GameObject.FindGameObjectsWithTag("Player");
+
+        }
+        if (players.Length == 2)
+        {
+            otherPlayerRB = players[1].GetComponent<Rigidbody2D>();
         }
 
         if (player1)
@@ -467,6 +474,31 @@ public class Player : NetworkBehaviour
             }
         }
 
+        if (roundManager.roundEnded)
+        {
+            if (health <= 0 && isGrounded)
+            {
+                nAnim.SetTrigger("Died");
+            }
+            else if (isGrounded)
+            {
+                nAnim.SetTrigger("Won");
+            }
+        }
+
+        if (rb.velocity.y < 0 && !isGrounded)
+        {
+            anim.SetBool("isFalling", true);
+            anim.SetBool("isJumping", false);
+        }
+
+        if (anim.GetBool("isKnockedDown") && isGrounded)
+        {
+            nAnim.SetTrigger("Get Up");
+        }
+
+        if (!roundManager.roundStarted) return;
+
         // if (!Application.isFocused) return;
         if (isLocalPlayer)
         {
@@ -484,44 +516,17 @@ public class Player : NetworkBehaviour
 
             pushBox.SetActive(isGrounded);
 
-            if (anim.GetBool("isKnockedDown") && isGrounded)
-            {
-                nAnim.SetTrigger("Get Up");
-            }
-
             if (anim.GetBool("isAirKicking"))
             {
                 Vector3 movement = new Vector3(forward * moveSpeed * 0.00015f, 0, 0);
                 transform.position = transform.position + movement;
             }
 
-            if (rb.velocity.y < 0 && !isGrounded)
-            {
-                anim.SetBool("isFalling", true);
-                anim.SetBool("isJumping", false);
-            }
-
-            if (players.Length < 2)
-            {
-                player1 = true;
-                players = GameObject.FindGameObjectsWithTag("Player");
-            }
-            else if (otherPlayer == null)
-            {
-                foreach (var player in players)
-                {
-                    if (player != gameObject)
-                    {
-                        otherPlayer = player.GetComponent<Player>();
-                        otherPlayerRB = player.GetComponent<Rigidbody2D>();
-                    }
-                }
-            }
         }
     }
 
-    void FixedUpdate()
-    {
-        // Debug.Log(invincible);
-    }
+    // void FixedUpdate()
+    // {
+    //     Debug.Log(otherPlayer);
+    // }
 }

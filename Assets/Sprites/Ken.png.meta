@@ -390,12 +390,12 @@ TextureImporter:
       name: Lose 1
       rect:
         serializedVersion: 2
-        x: 1002
-        y: 721
-        width: 72
-        height: 42
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 949
+        y: 376
+        width: 37
+        height: 51
+      alignment: 9
+      pivot: {x: 0.48863426, y: 0.6930327}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -403,27 +403,6 @@ TextureImporter:
       bones: []
       spriteID: 1baca946edbe7574288cd5ca92f4263b
       internalID: 362146088
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lose 2
-      rect:
-        serializedVersion: 2
-        x: 1078
-        y: 724
-        width: 77
-        height: 28
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 34b1207fff9f9b44795a7d439a129170
-      internalID: 2130594250
       vertices: []
       indices: 
       edges: []
@@ -625,8 +604,8 @@ TextureImporter:
         y: 91
         width: 33
         height: 106
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.54071784, y: 0.3663805}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

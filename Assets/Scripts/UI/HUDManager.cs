@@ -23,7 +23,6 @@ public class HUDManager : NetworkBehaviour
     {
         playerScript = player.GetComponent<Player>();
         halfway = GameObject.Find("Halfway");
-        Debug.Log(player.transform.position.x > halfway.transform.position.x);
         if (player.transform.position.x > halfway.transform.position.x)
         {
             healthBarObject.transform.localScale = new Vector3(healthBarObject.transform.localScale.x * -1, healthBarObject.transform.localScale.y, healthBarObject.transform.localScale.z);
