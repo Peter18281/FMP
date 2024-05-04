@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class MainMenu : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class MainMenu : MonoBehaviour
     public GameObject lobby;
     public GameObject joinLobby;
     public GameObject settings;
+    public NetworkManager networkManager;
 
     public void ShowTutorial()
     {
@@ -23,6 +25,24 @@ public class MainMenu : MonoBehaviour
     public void ShowLobby()
     {
         lobby.SetActive(true);
+        networkManager.StartHost();
+    }
+
+    public void SetIP(string ip){
+        networkManager.networkAddress = ip;
+    }
+
+    public void JoinGame(){
+        networkManager.StartClient();
+    }
+
+    public void Stop(){
+        if(networkManager.mode == NetworkManagerMode.Host){
+            networkManager.StopHost();
+        }
+        if(networkManager.mode == NetworkManagerMode.ClientOnly){
+            networkManager.StopClient();
+        }
     }
 
     public void HideLobby()
@@ -50,7 +70,6 @@ public class MainMenu : MonoBehaviour
         settings.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
 

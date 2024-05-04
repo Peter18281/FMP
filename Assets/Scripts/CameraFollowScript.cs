@@ -49,8 +49,11 @@ public class CameraFollowScript : NetworkBehaviour
 
     void Update()
     {
-        SetCameraPos();
-        SetCameraSize();
+        if (roundManager.players.Length == 2)
+        {
+            SetCameraPos();
+            SetCameraSize();
+        }
     }
 }
 
