@@ -1,5 +1,85 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &122461021773842868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3379353158901213503}
+  - component: {fileID: 522898474067994833}
+  - component: {fileID: 5256049932618816224}
+  m_Layer: 6
+  m_Name: AirKicks
+  m_TagString: HitBox
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3379353158901213503
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122461021773842868}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.29, y: 0.422, z: 0.07254926}
+  m_LocalScale: {x: 0.47737867, y: 0.61885583, z: 0.76135}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8768955669803600825}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &522898474067994833
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122461021773842868}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0059264153, y: 0.33883044}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.71948254, y: 0.7628185}
+  m_EdgeRadius: 0
+--- !u!114 &5256049932618816224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122461021773842868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2128fbe75a8c42a4f89ad795204a1e24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  pushback: 1
+  isKnockdown: 1
+  isSpecial: 1
+  attackHeight: 1
+  hitStun: 0.5
+  blockStun: 0.5
+  isFireball: 0
+  fireball: {fileID: 0}
 --- !u!1 &296343054769090017
 GameObject:
   m_ObjectHideFlags: 0
@@ -71,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2128fbe75a8c42a4f89ad795204a1e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 5
   pushback: 1
   isKnockdown: 0
   isSpecial: 0
@@ -490,7 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2128fbe75a8c42a4f89ad795204a1e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 25
+  damage: 15
   pushback: 10
   isKnockdown: 1
   isSpecial: 1
@@ -566,6 +646,7 @@ Transform:
   - {fileID: 1544796939158044179}
   - {fileID: 2699381844661998145}
   - {fileID: 4928170288250932029}
+  - {fileID: 3379353158901213503}
   m_Father: {fileID: 2152483009988003810}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -640,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2128fbe75a8c42a4f89ad795204a1e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
+  damage: 3
   pushback: 1
   isKnockdown: 0
   isSpecial: 0
@@ -720,7 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2128fbe75a8c42a4f89ad795204a1e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 10
   pushback: 0.1
   isKnockdown: 0
   isSpecial: 0
@@ -858,6 +939,7 @@ MonoBehaviour:
   syncInterval: 0.1
   isGrounded: 1
   anim: {fileID: 0}
+  nAnim: {fileID: 0}
   fireballObject: {fileID: 4108193439418231543, guid: 2f60e89fcd0877d438f3238acb23d65a, type: 3}
   fireballs: []
   health: 100
@@ -1094,7 +1176,7 @@ Transform:
   m_GameObject: {fileID: 7791110818623550830}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.458, y: -0.397, z: 0}
-  m_LocalScale: {x: 0.15533985, y: 0.2125, z: 1}
+  m_LocalScale: {x: 0.3145632, y: 0.2125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6740855511085423776}

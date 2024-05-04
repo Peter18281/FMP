@@ -26,7 +26,7 @@ public class RoundManager : NetworkBehaviour
     public TMP_Text round3Start;
     public TMP_Text fight;
     public TMP_Text draw;
-    [SyncVar] private GameObject[] players;
+    [SyncVar] public GameObject[] players;
     [SerializeField]
     private GameObject player1Spawn;
     [SerializeField]
@@ -262,8 +262,6 @@ public class RoundManager : NetworkBehaviour
         {
             Invoke("Reset", 2);
         }
-
-        Debug.Log(player2Script.anim.GetBool("isInvincible"));
 
         if (gameStarted && !roundEnded && roundStarted)
         {

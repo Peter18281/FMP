@@ -399,6 +399,8 @@ public class Player : NetworkBehaviour
     {
         scale = transform.localScale;
 
+        Debug.Log(players[1].GetComponent<Player>().isGrounded);
+
         if (otherPlayerRB != null && isGrounded)
         {
             if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && players[1].GetComponent<Player>().isGrounded)
@@ -428,7 +430,6 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
-        FacingDirection();
 
         if (anim.GetBool("isInvincible"))
         {
@@ -445,9 +446,17 @@ public class Player : NetworkBehaviour
             players = GameObject.FindGameObjectsWithTag("Player");
 
         }
-        if (players.Length == 2)
+        if (players.Length == 2 && otherPlayer == null)
         {
-            otherPlayerRB = players[1].GetComponent<Rigidbody2D>();
+            foreach (var x in players)
+            {
+                if (x != gameObject)
+                {
+                    otherPlayer = x.GetComponent<Player>();
+                    otherPlayerRB = x.GetComponent<Rigidbody2D>();
+                }
+            }
+
         }
 
         if (player1)
@@ -508,6 +517,7 @@ public class Player : NetworkBehaviour
             StandAttack();
             JumpAttack();
             AirKicks();
+            FacingDirection();
             if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == 0)
             {
                 FireballCmd();

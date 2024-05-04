@@ -22,7 +22,7 @@ public class HitDetection : MonoBehaviour
             if (attackData.isFireball)
             {
                 fireball = attackData.fireball;
-                if (fireball.player.id != player.id)
+                if (fireball.player.id != player.id && !player.anim.GetBool("fireballInvincible"))
                 {
                     player.GetHit(
                                     attackData.damage,

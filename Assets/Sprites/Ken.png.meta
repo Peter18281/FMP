@@ -96,9 +96,9 @@ TextureImporter:
       name: Idle 1
       rect:
         serializedVersion: 2
-        x: 5
+        x: 4
         y: 764
-        width: 35
+        width: 36
         height: 79
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -1106,7 +1106,7 @@ TextureImporter:
         serializedVersion: 2
         x: 222
         y: 462
-        width: 36
+        width: 37
         height: 106
       alignment: 9
       pivot: {x: 0.51076806, y: 0.45611456}
