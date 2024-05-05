@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class RoundManager : NetworkBehaviour
 {
-    private int roundsToWin = 2;
-    private int gamesToWin = 2;
+    [SyncVar] private int roundsToWin = 2;
+    [SyncVar] private int gamesToWin = 2;
     [SyncVar] public float roundTimer = 99.0f;
     [SyncVar] private float roundEndTimer = 2.0f;
     [SyncVar] public bool gameStarted = false;
@@ -45,6 +45,7 @@ public class RoundManager : NetworkBehaviour
     private TMP_Text setCount;
     [SerializeField]
     private Button rematch;
+    public NetworkRoomManager networkManager;
 
     public void AwardWin(bool player1)
     {
@@ -81,6 +82,7 @@ public class RoundManager : NetworkBehaviour
         gameStarted = false;
         roundStarted = false;
         roundEnded = false;
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkRoomManager>();
     }
 
     void PostGame()
@@ -101,6 +103,17 @@ public class RoundManager : NetworkBehaviour
         player2Rounds = 0;
         postGame.SetActive(false);
         Reset();
+    }
+
+    public void Quit(){
+        if (networkManager.mode == NetworkManagerMode.Host)
+        {
+            networkManager.StopHost();
+        }
+        if (networkManager.mode == NetworkManagerMode.ClientOnly)
+        {
+            networkManager.StopClient();
+        }
     }
 
     void EndGame()

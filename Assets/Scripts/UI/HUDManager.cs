@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using TMPro;
 
 public class HUDManager : NetworkBehaviour
 {
@@ -18,6 +19,7 @@ public class HUDManager : NetworkBehaviour
     public Image backArrow;
     public Image neutral;
     private bool fireballUsed;
+    public TMP_Text playerName;
     
     void Awake()
     {
@@ -31,6 +33,7 @@ public class HUDManager : NetworkBehaviour
 
             healthBar.fillOrigin = (int)Image.OriginHorizontal.Right;
         }
+        playerName.text = PlayerPrefs.GetString("PlayerName");
     }
 
     void Update()

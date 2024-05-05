@@ -399,8 +399,6 @@ public class Player : NetworkBehaviour
     {
         scale = transform.localScale;
 
-        Debug.Log(players[1].GetComponent<Player>().isGrounded);
-
         if (otherPlayerRB != null && isGrounded)
         {
             if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && players[1].GetComponent<Player>().isGrounded)

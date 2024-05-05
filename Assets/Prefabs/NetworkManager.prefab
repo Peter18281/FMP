@@ -958,7 +958,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &258700101
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1242,7 +1242,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2046194327}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: HideLobby
+        m_MethodName: Ready
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1415,6 +1415,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2046194327}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: HideLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2046194327}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: Stop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9712,6 +9724,7 @@ GameObject:
   - component: {fileID: 2046194328}
   - component: {fileID: 2046194327}
   - component: {fileID: 2046194326}
+  - component: {fileID: 2603118583072074756}
   m_Layer: 5
   m_Name: MenuCanvas
   m_TagString: Untagged
@@ -9815,12 +9828,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 876bc7b26143f3e4baaa93dedd85f680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   mainMenu: {fileID: 2046194325}
   tutorial: {fileID: 252550468}
   lobby: {fileID: 2117543254}
   joinLobby: {fileID: 1659035977}
   settings: {fileID: 1763141438}
-  networkManager: {fileID: 4999116313351654171}
+  networkManager: {fileID: 1569558566172040926}
+  player2: {fileID: 258700100}
+  player1Name: {fileID: 846768932}
+  player2Name: {fileID: 155222367}
+  notReadySprite: {fileID: 626160031, guid: 8fb967eb0af51804a84bb3390f84df72, type: 3}
+  readySprite: {fileID: 1844224337, guid: 8fb967eb0af51804a84bb3390f84df72, type: 3}
+  player1Img: {fileID: 1061133915}
+  player2Img: {fileID: 1310329016}
 --- !u!114 &2046194326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9837,6 +9860,23 @@ MonoBehaviour:
   enterButton: {fileID: 1646964141}
   displayName: 
   nameField: {fileID: 1424215016}
+--- !u!114 &2603118583072074756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046194325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1056527806
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &2070371059
 GameObject:
   m_ObjectHideFlags: 0
@@ -10302,10 +10342,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4999116313351654172}
-  - component: {fileID: 4999116313351654171}
-  - component: {fileID: 4999116313351654170}
   - component: {fileID: 4999116313351654174}
   - component: {fileID: 4999116313351654173}
+  - component: {fileID: 1569558566172040926}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -10329,67 +10368,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4999116313351654171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4999116313351654169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  runInBackground: 1
-  headlessStartMode: 1
-  editorAutoStart: 0
-  sendRate: 120
-  autoStartServerBuild: 0
-  autoConnectClientBuild: 0
-  offlineScene: Assets/Scenes/MainMenu.unity
-  onlineScene: Assets/Scenes/Main.unity
-  transport: {fileID: 4999116313351654174}
-  networkAddress: localhost
-  maxConnections: 2
-  disconnectInactiveConnections: 0
-  disconnectInactiveTimeout: 60
-  authenticator: {fileID: 0}
-  playerPrefab: {fileID: 7595353258121558014, guid: 3820a2d3051247c4b840d09df5487984, type: 3}
-  autoCreatePlayer: 1
-  playerSpawnMethod: 1
-  spawnPrefabs:
-  - {fileID: 4108193439418231543, guid: 2f60e89fcd0877d438f3238acb23d65a, type: 3}
-  exceptionsDisconnect: 1
-  snapshotSettings:
-    bufferTimeMultiplier: 2
-    bufferLimit: 32
-    catchupNegativeThreshold: -1
-    catchupPositiveThreshold: 1
-    catchupSpeed: 0.019999999552965164
-    slowdownSpeed: 0.03999999910593033
-    driftEmaDuration: 1
-    dynamicAdjustment: 1
-    dynamicAdjustmentTolerance: 1
-    deliveryTimeEmaDuration: 2
-  evaluationMethod: 0
-  evaluationInterval: 3
-  timeInterpolationGui: 0
---- !u!114 &4999116313351654170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4999116313351654169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0
 --- !u!114 &4999116313351654174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10435,6 +10413,61 @@ MonoBehaviour:
   padding: 2
   width: 150
   height: 25
+--- !u!114 &1569558566172040926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4999116313351654169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615e6c6589cf9e54cad646b5a11e0529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 1
+  editorAutoStart: 0
+  sendRate: 60
+  autoStartServerBuild: 0
+  autoConnectClientBuild: 0
+  offlineScene: Assets/Scenes/MainMenu.unity
+  onlineScene: Assets/Scenes/Room.unity
+  transport: {fileID: 4999116313351654174}
+  networkAddress: localhost
+  maxConnections: 2
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 7595353258121558014, guid: 3820a2d3051247c4b840d09df5487984, type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 1
+  spawnPrefabs:
+  - {fileID: 4108193439418231543, guid: 2f60e89fcd0877d438f3238acb23d65a, type: 3}
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
+  showRoomGUI: 1
+  minPlayers: 2
+  roomPlayerPrefab: {fileID: 639402360611877165, guid: f2e449c98b2e2054ebbf667e02ec7f3c, type: 3}
+  RoomScene: Assets/Scenes/Room.unity
+  GameplayScene: Assets/Scenes/Main.unity
+  _allPlayersReady: 0
+  roomSlots: []
+  clientIndex: 0
 --- !u!1 &7877367072739301270
 GameObject:
   m_ObjectHideFlags: 0
@@ -10460,7 +10493,7 @@ RectTransform:
   m_GameObject: {fileID: 7877367072739301270}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5038, y: 1.5038, z: 1.5038}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1332105775}
@@ -10481,6 +10514,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
