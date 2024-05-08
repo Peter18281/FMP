@@ -306,13 +306,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8612946d26e313469462ec1eb543dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1631034459258047804}
+  player: {fileID: 0}
   myHitboxes:
   - {fileID: 296343054769090017}
   - {fileID: 7331658264870701262}
   - {fileID: 5149609341772997224}
   - {fileID: 7467954163988242222}
-  - {fileID: 122461021773842868}
 --- !u!1 &3555204493061020174
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,13 +383,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8612946d26e313469462ec1eb543dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1631034459258047804}
+  player: {fileID: 0}
   myHitboxes:
   - {fileID: 296343054769090017}
   - {fileID: 7331658264870701262}
   - {fileID: 5149609341772997224}
   - {fileID: 7467954163988242222}
-  - {fileID: 122461021773842868}
 --- !u!1 &3624201145084572383
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,13 +460,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8612946d26e313469462ec1eb543dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1631034459258047804}
+  player: {fileID: 0}
   myHitboxes:
   - {fileID: 296343054769090017}
   - {fileID: 7331658264870701262}
   - {fileID: 5149609341772997224}
   - {fileID: 7467954163988242222}
-  - {fileID: 122461021773842868}
 --- !u!1 &4777711202851568009
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,15 +820,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2152483009988003810}
   - component: {fileID: 201486883817950176}
-  - component: {fileID: 6407077088336505253}
-  - component: {fileID: 1631034459258047804}
-  - component: {fileID: 2155434178029074747}
   - component: {fileID: 9062734410881239894}
   - component: {fileID: 560075798769959070}
-  - component: {fileID: -2777845117541962432}
-  - component: {fileID: 8062886351713776941}
+  - component: {fileID: 3407975987464705214}
   m_Layer: 6
-  m_Name: Player
+  m_Name: OfflinePlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -898,7 +891,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 626160031, guid: 8fb967eb0af51804a84bb3390f84df72, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.39489147, g: 0.6921673, b: 0.9622642, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -908,80 +901,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
---- !u!114 &6407077088336505253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7595353258121558014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  _assetId: 1716367244
-  serverOnly: 0
-  visibility: 0
-  hasSpawned: 0
---- !u!114 &1631034459258047804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7595353258121558014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c96bf6f80933074cb8c271d9dc5ea97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0.1
-  isGrounded: 1
-  anim: {fileID: 0}
-  nAnim: {fileID: 0}
-  fireballObject: {fileID: 4108193439418231543, guid: 2f60e89fcd0877d438f3238acb23d65a, type: 3}
-  fireballs: []
-  health: 100
-  pushBox: {fileID: 1676906737159660070}
-  id: 0
-  invincible: 0
-  myHurtboxes:
-  - {fileID: 3555204493061020174}
-  - {fileID: 3624201145084572383}
-  - {fileID: 7769675803904183441}
-  - {fileID: 2576634083711817258}
-  hudManager: {fileID: 2037408193396749914}
-  player1: 0
-  round1: {fileID: 9074137625025139111}
-  round2: {fileID: 2733677874763390034}
-  lost: 0
---- !u!114 &2155434178029074747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7595353258121558014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab2cbc52526ea384ba280d13cd1a57b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 9062734410881239894}
-  clientAuthority: 1
-  syncVelocity: 1
-  clearVelocity: 0
-  velocitySensitivity: 0.1
-  syncAngularVelocity: 1
-  clearAngularVelocity: 0
-  angularVelocitySensitivity: 0.1
 --- !u!50 &9062734410881239894
 Rigidbody2D:
   serializedVersion: 4
@@ -1024,7 +943,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-2777845117541962432
+--- !u!114 &3407975987464705214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1033,49 +952,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 7595353258121558014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Script: {fileID: 11500000, guid: 668d94ae398a0fb48ad48e0c46c77e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  clientAuthority: 1
-  animator: {fileID: 560075798769959070}
---- !u!114 &8062886351713776941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7595353258121558014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 2152483009988003810}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 1
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 3
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 5
-  changedDetection: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  isGrounded: 1
+  anim: {fileID: 560075798769959070}
+  fireballs: []
+  otherPlayer: {fileID: 0}
+  otherPlayerRB: {fileID: 0}
+  health: 100
+  pushBox: {fileID: 3555204493061020174}
+  id: 0
+  invincible: 0
+  myHurtboxes: []
+  hudManager: {fileID: 2037408193396749914}
+  player1: 1
+  round1: {fileID: 9074137625025139111}
+  round2: {fileID: 2733677874763390034}
 --- !u!1 &7769675803904183441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1147,13 +1040,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8612946d26e313469462ec1eb543dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1631034459258047804}
+  player: {fileID: 0}
   myHitboxes:
   - {fileID: 296343054769090017}
   - {fileID: 7331658264870701262}
   - {fileID: 5149609341772997224}
   - {fileID: 7467954163988242222}
-  - {fileID: 122461021773842868}
 --- !u!1 &7791110818623550830
 GameObject:
   m_ObjectHideFlags: 0

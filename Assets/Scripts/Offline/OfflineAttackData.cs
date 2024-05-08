@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Script used to store data for an attack when the player gets hit.
-public class AttackData : MonoBehaviour
+public class OfflineAttackData : MonoBehaviour
 {
     public int damage;
     public float pushback;
@@ -13,5 +12,5 @@ public class AttackData : MonoBehaviour
     public float hitStun;
     public float blockStun;
     public bool isFireball;
-    public Fireball fireball;
+    public OfflineFireball fireball;
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+//Script used to handle player collision
 public class PlayerCollision : NetworkBehaviour
 {
-    [SerializeField]
-    private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
 
     void OnTriggerEnter2D(Collider2D col)
     {

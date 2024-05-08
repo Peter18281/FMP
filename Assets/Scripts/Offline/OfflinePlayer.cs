@@ -1,67 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using UnityEngine.UI;
 
-public class Player : NetworkBehaviour
+public class OfflinePlayer : MonoBehaviour
 {
-    [SerializeField] private GameObject fireballObject;
-    private Rigidbody2D rb;
-    private Player otherPlayer;
-    private Rigidbody2D otherPlayerRB;
-    private GameObject[] players;
-    private GameObject halfway;
-    [SerializeField] private GameObject pushBox;
-    [SerializeField] private HUDManager hudManager;
-    private RoundManager roundManager;
-    private SpriteRenderer spriteRenderer;
-
     private float moveSpeed = 70f;
     private float jumpForce = 2.0f;
     private Vector3 jump;
     private bool facingRight;
     private int forward = 1;
     private int back = -1;
-    private bool airAttack;
-    private Vector3 scale;
-    private Vector3 spawnPoint;
-    private bool fireballUsed = false;
-
-    [SyncVar] public bool isGrounded = true;
-    [SyncVar] public int health = 100;
-    public int id;
-    public bool lost;
-    public bool invincible = false;
-    [SyncVar] public bool player1 = false;
-
+    private Rigidbody2D rb;
+    public bool isGrounded = true;
     public Animator anim;
-    public NetworkAnimator nAnim;
+    public GameObject fireballPrefab;
     public GameObject[] fireballs;
+    private Vector3 spawnPoint;
+    private bool airAttack;
+    public OfflinePlayer otherPlayer;
+    public Rigidbody2D otherPlayerRB;
+    private GameObject halfway;
+    private Vector3 scale;
+    public int health = 100;
+    [SerializeField]
+    private GameObject pushBox;
+    public int id;
+    private bool fireballUsed = false;
+    public bool invincible = false;
+    [SerializeField]
+    public List<GameObject> myHurtboxes;
+    [SerializeField]
+    private OfflineHUDManager hudManager;
+    public bool player1 = false;
+    private OfflineRoundManager roundManager;
     public Image round1;
     public Image round2;
-    [SerializeField] public List<GameObject> myHurtboxes;
+    private SpriteRenderer spriteRenderer;
+    public bool lost = false;
+    private float moveHorizontal;
+    private float moveVertical;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        nAnim = GetComponent<NetworkAnimator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        players = GameObject.FindGameObjectsWithTag("Player");
         halfway = GameObject.Find("Halfway");
-        roundManager = GameObject.Find("GameManager").GetComponent<RoundManager>();
-
-        if (players.Length == 1)
-        {
-            id = 1;
-        }
-        else
-        {
-            id = 2;
-        }
-
-        //Set the inital facing direction based on if the player spawns over halfway into the map.
+        roundManager = GameObject.Find("GameManager").GetComponent<OfflineRoundManager>();
         scale = transform.localScale;
         if (halfway.transform.position.x < transform.position.x)
         {
@@ -78,15 +64,24 @@ public class Player : NetworkBehaviour
 
     void Movement()
     {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        if (player1)
+        {
+            moveHorizontal = Input.GetAxisRaw("Horizontal");
+            moveVertical = Input.GetAxisRaw("Vertical");
+        }
+        else
+        {
+            moveHorizontal = Input.GetAxisRaw("Horizontal2");
+            moveVertical = Input.GetAxisRaw("Vertical2");
+        }
 
         if (isGrounded && !anim.GetBool("isCrouching") && anim.GetBool("canAct"))
         {
-            if (Input.GetAxisRaw("Horizontal") == 1)
+            if (moveHorizontal == 1)
             {
                 anim.SetBool("isWalkingRight", true);
             }
-            else if (Input.GetAxisRaw("Horizontal") == -1)
+            else if (moveHorizontal == -1)
             {
                 anim.SetBool("isWalkingLeft", true);
             }
@@ -98,7 +93,7 @@ public class Player : NetworkBehaviour
             Vector3 movement = new Vector3(moveHorizontal * moveSpeed * 0.0001f, 0, 0);
             transform.position = transform.position + movement;
         }
-        if (Input.GetAxisRaw("Vertical") == -1)
+        if (moveVertical == -1)
         {
             anim.SetBool("isCrouching", true);
         }
@@ -110,7 +105,7 @@ public class Player : NetworkBehaviour
 
     public void WinPose()
     {
-        nAnim.SetTrigger("Won");
+        anim.SetTrigger("Won");
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -130,9 +125,7 @@ public class Player : NetworkBehaviour
             isGrounded = false;
         }
     }
-    
-    //Function for when the player gets hit, takes in parameters to apply to the player.
-    [ClientRpc]
+
     public void GetHit(int damage, float pushback, bool isKnockdown, bool isBlocking, bool isSpecial, bool isCrouching, int attackHeight, float hitStun, float blockStun)
     {
         Vector3 pushbackForce = new Vector3(pushback * back, 0, 0);
@@ -148,14 +141,14 @@ public class Player : NetworkBehaviour
                         health -= (int)Mathf.Round(damage / 10);
                     }
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                    nAnim.SetTrigger("Low Block");
+                    anim.SetTrigger("Low Block");
                 }
                 else
                 {
                     health -= damage;
                     if (isKnockdown)
                     {
-                        nAnim.SetTrigger("Knockdown");
+                        anim.SetTrigger("Knockdown");
                     }
                     else
                     {
@@ -163,11 +156,11 @@ public class Player : NetworkBehaviour
                         rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                         if (!isCrouching)
                         {
-                            nAnim.SetTrigger("Stand Hit");
+                            anim.SetTrigger("Stand Hit");
                         }
                         else
                         {
-                            nAnim.SetTrigger("Low Hit");
+                            anim.SetTrigger("Low Hit");
                         }
                     }
                 }
@@ -185,11 +178,11 @@ public class Player : NetworkBehaviour
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                     if (!isCrouching)
                     {
-                        nAnim.SetTrigger("Stand Block");
+                        anim.SetTrigger("Stand Block");
                     }
                     else
                     {
-                        nAnim.SetTrigger("Low Block");
+                        anim.SetTrigger("Low Block");
                     }
 
                 }
@@ -201,7 +194,7 @@ public class Player : NetworkBehaviour
                         isGrounded = false;
                         Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
                         rb.AddForce(knockdownForce, ForceMode2D.Impulse);
-                        nAnim.SetTrigger("Knockdown");
+                        anim.SetTrigger("Knockdown");
                     }
                     else
                     {
@@ -209,11 +202,11 @@ public class Player : NetworkBehaviour
                         rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                         if (!isBlocking && !isCrouching)
                         {
-                            nAnim.SetTrigger("Stand Hit");
+                            anim.SetTrigger("Stand Hit");
                         }
                         else
                         {
-                            nAnim.SetTrigger("Low Hit");
+                            anim.SetTrigger("Low Hit");
                         }
                     }
                 }
@@ -229,7 +222,7 @@ public class Player : NetworkBehaviour
                         health -= (int)Mathf.Round(damage / 10);
                     }
                     rb.AddForce(pushbackForce, ForceMode2D.Impulse);
-                    nAnim.SetTrigger("Stand Block");
+                    anim.SetTrigger("Stand Block");
 
                 }
                 else
@@ -240,7 +233,7 @@ public class Player : NetworkBehaviour
                         isGrounded = false;
                         Vector3 knockdownForce = new Vector3(60f * back, 45f, 0f);
                         rb.AddForce(knockdownForce, ForceMode2D.Impulse);
-                        nAnim.SetTrigger("Knockdown");
+                        anim.SetTrigger("Knockdown");
                     }
                     else
                     {
@@ -248,11 +241,11 @@ public class Player : NetworkBehaviour
                         rb.AddForce(pushbackForce, ForceMode2D.Impulse);
                         if (!isBlocking && !isCrouching)
                         {
-                            nAnim.SetTrigger("Stand Hit");
+                            anim.SetTrigger("Stand Hit");
                         }
                         else
                         {
-                            nAnim.SetTrigger("Low Hit");
+                            anim.SetTrigger("Low Hit");
                         }
                     }
                 }
@@ -277,7 +270,6 @@ public class Player : NetworkBehaviour
         anim.SetBool("canAct", true);
     }
 
-    [Command]
     void FireballCmd()
     {
         if ((anim.GetBool("canAct") || anim.GetBool("canCancel")) && isGrounded && !anim.GetBool("isCrouching"))
@@ -286,7 +278,7 @@ public class Player : NetworkBehaviour
             fireballUsed = false;
             foreach (var fb in fireballs)
             {
-                var script = fb.GetComponent<Fireball>();
+                var script = fb.GetComponent<OfflineFireball>();
                 if (script.player.id == id)
                 {
                     fireballUsed = true;
@@ -306,27 +298,25 @@ public class Player : NetworkBehaviour
                     xDisplacement = -1.1f;
                 }
                 spawnPoint = new Vector3(transform.position.x + xDisplacement, transform.position.y + 0.35f, transform.position.z);
-                GameObject fireball = Instantiate(NetworkManager.singleton.spawnPrefabs[0], spawnPoint, Quaternion.identity);
-                NetworkServer.Spawn(fireball);
-                fireball.GetComponent<Fireball>().player = GetComponent<Player>();
-                fireball.GetComponent<Fireball>().hudManager = hudManager;
+                GameObject fireball = Instantiate(fireballPrefab, spawnPoint, Quaternion.identity);
+                fireball.GetComponent<OfflineFireball>().player = gameObject.GetComponent<OfflinePlayer>();
+                fireball.GetComponent<OfflineFireball>().hudManager = hudManager;
                 hudManager.FireballGray(id, true);
                 if (facingRight)
                 {
-                    fireball.GetComponent<Fireball>().right = false;
+                    fireball.GetComponent<OfflineFireball>().right = false;
                 }
                 else
                 {
-                    fireball.GetComponent<Fireball>().right = true;
+                    fireball.GetComponent<OfflineFireball>().right = true;
                 }
             }
         }
     }
 
-    [ClientRpc]
     void FireballRpc()
     {
-        nAnim.SetTrigger("Fireball");
+        anim.SetTrigger("Fireball");
     }
 
     IEnumerator Delay(float delay)
@@ -341,11 +331,23 @@ public class Player : NetworkBehaviour
 
         jump = new Vector3(1 * horizontalSpeed, jumpHeight, 0.0f);
 
-        if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == forward && anim.GetBool("canAct") && isGrounded)
+        if (player1)
         {
-            nAnim.SetTrigger("Uppercut");
-            rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == forward && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Uppercut");
+                rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            }
         }
+        else
+        {
+            if (Input.GetButtonDown("Special2") && Input.GetAxisRaw("Horizontal2") == forward && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Uppercut");
+                rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            }
+        }
+
     }
 
     void Jump()
@@ -356,46 +358,103 @@ public class Player : NetworkBehaviour
 
         jump = new Vector3(jumpHorizontal * horizontalSpeed, jumpHeight, 0.0f);
 
-        if (Input.GetButtonDown("Jump") && isGrounded && anim.GetBool("canAct"))
+        if (player1)
         {
-            anim.SetBool("isJumping", true);
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = 0.0f;
-            rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            if (Input.GetButtonDown("Jump") && isGrounded && anim.GetBool("canAct"))
+            {
+                anim.SetBool("isJumping", true);
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = 0.0f;
+                rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            }
         }
+        else
+        {
+            if (Input.GetButtonDown("Jump2") && isGrounded && anim.GetBool("canAct"))
+            {
+                anim.SetBool("isJumping", true);
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = 0.0f;
+                rb.AddForce(jump * jumpForce, ForceMode2D.Impulse);
+            }
+        }
+
     }
 
     void CrouchAttack()
     {
-        if (anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
+        if (player1)
         {
-            nAnim.SetTrigger("Crouch Attack");
+            if (anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Crouch Attack");
+            }
         }
+        else
+        {
+            if (anim.GetBool("isCrouching") && Input.GetButtonDown("Attack2") && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Crouch Attack");
+            }
+        }
+
     }
 
     void StandAttack()
     {
-        if (!anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
+        if (player1)
         {
-            nAnim.SetTrigger("Stand Attack");
+            if (!anim.GetBool("isCrouching") && Input.GetButtonDown("Attack") && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Stand Attack");
+            }
+        }
+        else
+        {
+            if (!anim.GetBool("isCrouching") && Input.GetButtonDown("Attack2") && anim.GetBool("canAct") && isGrounded)
+            {
+                anim.SetTrigger("Stand Attack");
+            }
         }
     }
 
     void JumpAttack()
     {
-        if (Input.GetButtonDown("Attack") && !isGrounded && !airAttack)
+        if (player1)
         {
-            airAttack = true;
-            nAnim.SetTrigger("Jump Attack");
+            if (Input.GetButtonDown("Attack") && !isGrounded && !airAttack)
+            {
+                airAttack = true;
+                anim.SetTrigger("Jump Attack");
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Attack2") && !isGrounded && !airAttack)
+            {
+                airAttack = true;
+                anim.SetTrigger("Jump Attack");
+            }
         }
     }
 
     void AirKicks()
     {
-        if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == back && isGrounded && !anim.GetBool("isCrouching"))
+        if (player1)
         {
-            nAnim.SetTrigger("Air Kicks");
+            if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == back && isGrounded && !anim.GetBool("isCrouching"))
+            {
+                anim.SetTrigger("Air Kicks");
+            }
         }
+        else
+        {
+            if (Input.GetButtonDown("Special2") && Input.GetAxisRaw("Horizontal2") == back && isGrounded && !anim.GetBool("isCrouching"))
+            {
+                anim.SetTrigger("Air Kicks");
+            }
+        }
+
     }
 
     void FacingDirection()
@@ -404,7 +463,7 @@ public class Player : NetworkBehaviour
 
         if (otherPlayerRB != null && isGrounded)
         {
-            if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && players[1].GetComponent<Player>().isGrounded)
+            if (otherPlayerRB.transform.position.x > transform.position.x && !facingRight && otherPlayer.isGrounded)
             {
                 facingRight = true;
                 forward = 1;
@@ -415,7 +474,7 @@ public class Player : NetworkBehaviour
                     transform.localScale = scale;
                 }
             }
-            else if (otherPlayerRB.transform.position.x < transform.position.x && facingRight && players[1].GetComponent<Player>().isGrounded)
+            else if (otherPlayerRB.transform.position.x < transform.position.x && facingRight && otherPlayer.isGrounded)
             {
                 facingRight = false;
                 forward = -1;
@@ -441,47 +500,26 @@ public class Player : NetworkBehaviour
             invincible = false;
         }
 
-        if (players.Length < 2)
-        {
-            player1 = true;
-            players = GameObject.FindGameObjectsWithTag("Player");
-
-        }
-        if (players.Length == 2 && otherPlayer == null)
-        {
-            foreach (var x in players)
-            {
-                if (x != gameObject)
-                {
-                    otherPlayer = x.GetComponent<Player>();
-                    otherPlayerRB = x.GetComponent<Rigidbody2D>();
-                }
-            }
-
-        }
-
         if (facingRight)
         {
-            if (Input.GetAxisRaw("Horizontal") == -1)
+            if (moveHorizontal == -1)
             {
-                anim.SetBool("isBlocking", true);
+               anim.SetBool("isBlocking", true);
             }
-            else
-            {
+            else{
                 anim.SetBool("isBlocking", false);
             }
         }
-        else
-        {
-            if (Input.GetAxisRaw("Horizontal") == 1)
+        else{
+            if (moveHorizontal == 1)
             {
-                anim.SetBool("isBlocking", true);
+               anim.SetBool("isBlocking", true);
             }
-            else
-            {
+            else{
                 anim.SetBool("isBlocking", false);
             }
         }
+
 
         if (player1)
         {
@@ -511,11 +549,11 @@ public class Player : NetworkBehaviour
         {
             if (health <= 0 && isGrounded)
             {
-                nAnim.SetTrigger("Died");
+                anim.SetTrigger("Died");
             }
             else if (isGrounded)
             {
-                nAnim.SetTrigger("Won");
+                anim.SetTrigger("Won");
             }
         }
 
@@ -527,34 +565,47 @@ public class Player : NetworkBehaviour
 
         if (anim.GetBool("isKnockedDown") && isGrounded)
         {
-            nAnim.SetTrigger("Get Up");
+            anim.SetTrigger("Get Up");
         }
 
         if (!roundManager.roundStarted) return;
+        Movement();
+        Jump();
+        CrouchAttack();
+        StandAttack();
+        JumpAttack();
+        AirKicks();
+        FacingDirection();
 
-        if (isLocalPlayer)
+        if (player1)
         {
-            Movement();
-            Jump();
-            CrouchAttack();
-            StandAttack();
-            JumpAttack();
-            AirKicks();
-            FacingDirection();
             if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == 0)
             {
                 FireballCmd();
             }
-            Uppercut();
-
-            pushBox.SetActive(isGrounded);
-
-            if (anim.GetBool("isAirKicking"))
-            {
-                Vector3 movement = new Vector3(forward * moveSpeed * 0.00015f, 0, 0);
-                transform.position = transform.position + movement;
-            }
-
         }
+        else
+        {
+            if (Input.GetButtonDown("Special2") && Input.GetAxisRaw("Horizontal2") == 0)
+            {
+                FireballCmd();
+            }
+        }
+
+        Uppercut();
+
+        pushBox.SetActive(isGrounded);
+
+        if (anim.GetBool("isAirKicking"))
+        {
+            Vector3 movement = new Vector3(forward * moveSpeed * 0.00015f, 0, 0);
+            transform.position = transform.position + movement;
+        }
+
     }
+
+    // void FixedUpdate()
+    // {
+    //     Debug.Log(otherPlayer);
+    // }
 }

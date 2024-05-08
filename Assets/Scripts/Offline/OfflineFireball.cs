@@ -1,36 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
-public class Fireball : NetworkBehaviour
+public class OfflineFireball : MonoBehaviour
 {
+
     private Rigidbody2D rb;
     private Renderer m_Renderer;
-    private NetworkAnimator nAnim;
     private Animator anim;
-
-    [SerializeField] private float moveSpeed = 0.2f;
+    public bool right = false;
+    [SerializeField]
+    private float moveSpeed = 0.2f;
     private Vector3 scale;
     private bool _collided = false;
+    public OfflinePlayer player;
     private bool collided;
+    public OfflineHUDManager hudManager;
 
-    [SyncVar] public bool right = false;
-    public Player player;
-    public HUDManager hudManager;
-
+    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         m_Renderer = GetComponent<Renderer>();
-        nAnim = GetComponent<NetworkAnimator>();
         anim = GetComponent<Animator>();
         scale = transform.localScale;
     }
 
     void Move()
     {
-        //Check which way the player is facing then send the fireball in that direction.
         if (right && moveSpeed > 0 && scale.x > 0)
         {
             moveSpeed *= -1;
@@ -41,25 +38,30 @@ public class Fireball : NetworkBehaviour
         transform.position = transform.position + movement;
     }
 
-    [Server]
     void DestroyFireBall()
     {
-        NetworkServer.Destroy(gameObject);
+        Destroy(gameObject);
         hudManager.FireballGray(player.id, false);
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        //Check for collisions and ignore collisions with player who threw the fireball.
         foreach (var x in player.myHurtboxes)
         {
             if (!player.myHurtboxes.Contains(x) && !player.invincible)
             {
                 if (collided) return;
                 collided = true;
-                nAnim.SetTrigger("Hit");
+                anim.SetTrigger("Hit");
                 _collided = true;
             }
+        }
+
+        if (col.CompareTag("Projectile"))
+        {
+            collided = true;
+            anim.SetTrigger("Hit");
+            _collided = true;
         }
 
     }

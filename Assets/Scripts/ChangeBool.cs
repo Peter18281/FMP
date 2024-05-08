@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Script used for setting booleans in the animator states for the duration of the animation.
 public class ChangeBool : StateMachineBehaviour
 {
  public string boolName;

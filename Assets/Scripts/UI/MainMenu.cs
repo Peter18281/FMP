@@ -21,6 +21,8 @@ public class MainMenu : NetworkBehaviour
     public Sprite readySprite;
     public Image player1Img;
     public Image player2Img;
+    public GameObject MenuMusic;
+    public GameObject GameMusic;
 
     public void ShowTutorial()
     {
@@ -30,6 +32,14 @@ public class MainMenu : NetworkBehaviour
     public void HideTutorial()
     {
         tutorial.SetActive(false);
+    }
+
+    public void SingePlayer(){
+        SceneManager.LoadScene("MainOffline");
+    }
+
+    public void Quit(){
+        Application.Quit();
     }
 
     public void ShowLobby()
@@ -144,11 +154,24 @@ public class MainMenu : NetworkBehaviour
             mainMenu.SetActive(true);
             joinLobby.SetActive(false);
             lobby.SetActive(true);
+            GameMusic.SetActive(false);
+            MenuMusic.SetActive(true);
+        }
+
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            mainMenu.SetActive(true);
+            joinLobby.SetActive(false);
+            lobby.SetActive(false);
+            GameMusic.SetActive(false);
+            MenuMusic.SetActive(true);
         }
 
         if (SceneManager.GetActiveScene().name == "Main")
         {
             mainMenu.SetActive(false);
+            GameMusic.SetActive(true);
+            MenuMusic.SetActive(false);
         }
     }
 }

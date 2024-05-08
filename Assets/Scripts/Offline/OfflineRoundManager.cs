@@ -2,35 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Mirror;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-//Handles the game logic, rounds, wins etc.
-public class RoundManager : NetworkBehaviour
+public class OfflineRoundManager : MonoBehaviour
 {
-    [SerializeField] private GameObject player1Spawn;
-    [SerializeField] private GameObject player2Spawn;
-    private Player player1Script;
-    private Player player2Script;
-    [SerializeField] private GameObject connection;
-    [SerializeField] private Image loading;
-    [SerializeField] private GameObject postGame;
-    [SerializeField] private TMP_Text setCount;
-    [SerializeField] private Button rematch;
-
-    [SyncVar] private int roundsToWin = 2;
-    [SyncVar] private int gamesToWin = 2;
-    [SyncVar] private float roundEndTimer = 2.0f;
-
-    [SyncVar] public float roundTimer = 99.0f;
-    [SyncVar] public bool gameStarted = false;
-    [SyncVar] public int player1Rounds;
-    [SyncVar] public int player2Rounds;
-    [SyncVar] public int player1Games;
-    [SyncVar] public int player2Games;
-    [SyncVar] public bool roundEnded;
-    [SyncVar] public bool roundStarted = false;
-
+    private int roundsToWin = 2;
+    private int gamesToWin = 2;
+    public float roundTimer = 99.0f;
+    private float roundEndTimer = 2.0f;
+    public bool gameStarted = false;
+    public int player1Rounds;
+    public int player2Rounds;
+    public int player1Games;
+    public int player2Games;
     public TMP_Text timerText;
     public TMP_Text player1RoundWin;
     public TMP_Text player1GameWin;
@@ -41,8 +26,22 @@ public class RoundManager : NetworkBehaviour
     public TMP_Text round3Start;
     public TMP_Text fight;
     public TMP_Text draw;
-    [SyncVar] public GameObject[] players;
-    public NetworkRoomManager networkManager;
+    [SerializeField]
+    private GameObject player1Spawn;
+    [SerializeField]
+    private GameObject player2Spawn;
+    public GameObject player1;
+    public GameObject player2;
+    public OfflinePlayer player1Script;
+    public OfflinePlayer player2Script;
+    public bool roundEnded;
+    public bool roundStarted = false;
+    [SerializeField]
+    private GameObject postGame;
+    [SerializeField]
+    private TMP_Text setCount;
+    [SerializeField]
+    private Button rematch;
 
     public void AwardWin(bool player1)
     {
@@ -76,12 +75,14 @@ public class RoundManager : NetworkBehaviour
 
     void Start()
     {
-        connection.gameObject.SetActive(true);
-        players = GameObject.FindGameObjectsWithTag("Player");
         gameStarted = false;
         roundStarted = false;
         roundEnded = false;
-        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkRoomManager>();
+        Invoke("RoundStart", 1);
+        Invoke("ClearRoundText", 2);
+        Invoke("FightText", 3);
+        Invoke("ClearFightText", 4);
+        gameStarted = true;
     }
 
     void PostGame()
@@ -106,22 +107,15 @@ public class RoundManager : NetworkBehaviour
 
     public void Quit()
     {
-        if (networkManager.mode == NetworkManagerMode.Host)
-        {
-            networkManager.StopHost();
-        }
-        if (networkManager.mode == NetworkManagerMode.ClientOnly)
-        {
-            networkManager.StopClient();
-        }
+        SceneManager.LoadScene("MainMenu");
     }
 
     void EndGame()
     {
         if (player1Rounds == roundsToWin && player2Rounds == roundsToWin)
         {
-            player1Script.nAnim.SetTrigger("Died");
-            player2Script.nAnim.SetTrigger("Died");
+            player1Script.anim.SetTrigger("Died");
+            player2Script.anim.SetTrigger("Died");
             player1Games++;
             player2Games++;
             draw.gameObject.SetActive(true);
@@ -182,14 +176,14 @@ public class RoundManager : NetworkBehaviour
 
     public void Reset()
     {
-        players[0].transform.position = player1Spawn.transform.position;
-        players[1].transform.position = player2Spawn.transform.position;
+        player1.transform.position = player1Spawn.transform.position;
+        player2.transform.position = player2Spawn.transform.position;
         player1Script.health = 100;
         player2Script.health = 100;
         player1Script.lost = false;
         player2Script.lost = false;
-        player1Script.nAnim.SetTrigger("roundStart");
-        player2Script.nAnim.SetTrigger("roundStart");
+        player1Script.anim.SetTrigger("roundStart");
+        player2Script.anim.SetTrigger("roundStart");
         roundEnded = false;
 
         player1RoundWin.gameObject.SetActive(false);
@@ -198,11 +192,6 @@ public class RoundManager : NetworkBehaviour
         roundTimer = 99.0f;
 
         Invoke("RoundStart", 1);
-    }
-
-    void FixedUpdate()
-    {
-        loading.transform.rotation = Quaternion.Euler(loading.transform.eulerAngles.x, loading.transform.eulerAngles.y, loading.transform.eulerAngles.z + 5);
     }
 
     void HealthCheck()
@@ -239,36 +228,17 @@ public class RoundManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (players.Length < 2)
+        if (player1Script.health <= 0 && !roundEnded)
         {
-            players = GameObject.FindGameObjectsWithTag("Player");
+            roundEnded = true;
+            roundStarted = false;
+            AwardWin(false);
         }
-        else if (players.Length == 2 && !gameStarted)
+        else if (player2Script.health <= 0 && !roundEnded)
         {
-            player1Script = players[0].GetComponent<Player>();
-            player2Script = players[1].GetComponent<Player>();
-            connection.SetActive(false);
-            Invoke("RoundStart", 1);
-            Invoke("ClearRoundText", 2);
-            Invoke("FightText", 3);
-            Invoke("ClearFightText", 4);
-            gameStarted = true;
-        }
-
-        if (players.Length == 2)
-        {
-            if (player1Script.health <= 0 && !roundEnded)
-            {
-                roundEnded = true;
-                roundStarted = false;
-                AwardWin(false);
-            }
-            else if (player2Script.health <= 0 && !roundEnded)
-            {
-                roundEnded = true;
-                roundStarted = false;
-                AwardWin(true);
-            }
+            roundEnded = true;
+            roundStarted = false;
+            AwardWin(true);
         }
 
         if (roundEnded && !roundStarted)
