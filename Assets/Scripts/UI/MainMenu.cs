@@ -156,7 +156,6 @@ public class MainMenu : NetworkBehaviour
 
     void Update()
     {
-        Debug.LogError(SceneManager.GetActiveScene().name);
         if (SceneManager.GetActiveScene().name == "Room")
         {
             mainMenu.SetActive(true);

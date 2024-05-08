@@ -4469,6 +4469,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1569558566172040926, guid: 4b6f8186fd630a745b2abdf500035f8a, type: 3}
+      propertyPath: networkAddress
+      value: 192.168.1.75
+      objectReference: {fileID: 0}
     - target: {fileID: 2603118583072074756, guid: 4b6f8186fd630a745b2abdf500035f8a, type: 3}
       propertyPath: sceneId
       value: 2542960109
