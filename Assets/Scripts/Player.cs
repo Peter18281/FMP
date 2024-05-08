@@ -429,7 +429,7 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
 
         if (anim.GetBool("isInvincible"))
@@ -530,6 +530,8 @@ public class Player : NetworkBehaviour
             nAnim.SetTrigger("Get Up");
         }
 
+        FacingDirection();
+
         if (!roundManager.roundStarted) return;
 
         if (isLocalPlayer)
@@ -540,7 +542,6 @@ public class Player : NetworkBehaviour
             StandAttack();
             JumpAttack();
             AirKicks();
-            FacingDirection();
             if (Input.GetButtonDown("Special") && Input.GetAxisRaw("Horizontal") == 0)
             {
                 FireballCmd();

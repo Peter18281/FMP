@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
 //Script used to handle player collision
-public class PlayerCollision : NetworkBehaviour
+public class PlayerCollision : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
 

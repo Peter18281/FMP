@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Mirror;
 using TMPro;
 
-public class HUDManager : NetworkBehaviour
+public class HUDManager : MonoBehaviour
 {
     public GameObject player;
     private Player playerScript;

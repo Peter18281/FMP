@@ -42,6 +42,8 @@ public class OfflineRoundManager : MonoBehaviour
     private TMP_Text setCount;
     [SerializeField]
     private Button rematch;
+    public MainMenu mainMenu;
+    public GameObject pause;
 
     public void AwardWin(bool player1)
     {
@@ -78,6 +80,10 @@ public class OfflineRoundManager : MonoBehaviour
         gameStarted = false;
         roundStarted = false;
         roundEnded = false;
+    }
+
+    public void StartGame()
+    {
         Invoke("RoundStart", 1);
         Invoke("ClearRoundText", 2);
         Invoke("FightText", 3);
@@ -107,6 +113,14 @@ public class OfflineRoundManager : MonoBehaviour
 
     public void Quit()
     {
+        player1Rounds = 0;
+        player2Rounds = 0;
+        player1Games = 0;
+        player2Games = 0;
+        gameStarted = false;
+        mainMenu.mainMenu.SetActive(true);
+        mainMenu.GameMusic.SetActive(false);
+        mainMenu.MenuMusic.SetActive(true);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -228,6 +242,19 @@ public class OfflineRoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!pause.active)
+            {
+                Time.timeScale = 0f;
+                pause.SetActive(true);
+            }
+            else{
+                Time.timeScale = 1f;
+                pause.SetActive(false);
+            }
+
+        }
         if (player1Script.health <= 0 && !roundEnded)
         {
             roundEnded = true;

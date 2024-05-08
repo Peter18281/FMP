@@ -23,6 +23,7 @@ public class MainMenu : NetworkBehaviour
     public Image player2Img;
     public GameObject MenuMusic;
     public GameObject GameMusic;
+    public bool singlePlayer = false;
 
     public void ShowTutorial()
     {
@@ -34,11 +35,19 @@ public class MainMenu : NetworkBehaviour
         tutorial.SetActive(false);
     }
 
-    public void SingePlayer(){
-        SceneManager.LoadScene("MainOffline");
+    public void SinglePlayer()
+    {
+        mainMenu.SetActive(false);
+        if (!GameMusic.active)
+        {
+            GameMusic.SetActive(true);
+        }
+        MenuMusic.SetActive(false);
+        singlePlayer = true;
     }
 
-    public void Quit(){
+    public void Quit()
+    {
         Application.Quit();
     }
 
@@ -147,30 +156,36 @@ public class MainMenu : NetworkBehaviour
 
     void Update()
     {
-        // checkPlayers();
-
+        Debug.LogError(SceneManager.GetActiveScene().name);
         if (SceneManager.GetActiveScene().name == "Room")
         {
             mainMenu.SetActive(true);
             joinLobby.SetActive(false);
             lobby.SetActive(true);
             GameMusic.SetActive(false);
-            MenuMusic.SetActive(true);
+            if (!MenuMusic.active)
+            {
+                MenuMusic.SetActive(true);
+            }
         }
 
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (SceneManager.GetActiveScene().name == "MainMenu" && !singlePlayer)
         {
             mainMenu.SetActive(true);
-            joinLobby.SetActive(false);
-            lobby.SetActive(false);
             GameMusic.SetActive(false);
-            MenuMusic.SetActive(true);
+            if (!MenuMusic.active)
+            {
+                MenuMusic.SetActive(true);
+            }
         }
 
         if (SceneManager.GetActiveScene().name == "Main")
         {
             mainMenu.SetActive(false);
-            GameMusic.SetActive(true);
+            if (!GameMusic.active)
+            {
+                GameMusic.SetActive(true);
+            }
             MenuMusic.SetActive(false);
         }
     }
